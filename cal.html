@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #70789b 0%, #764ba2 100%);
+      padding: 20px;
+    }
+    .head{
+        color: white;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    .calculator {
+      background: rgb(63, 3, 68);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 24px;
+      width: 100%;
+      max-width: 500px;
+    
+    }
+    /* Display section */
+    .display-section {
+      margin-bottom: 20px;
+    }
+
+    .last-expression {
+      min-height: 24px;
+      padding: 8px 12px;
+      text-align: right;
+      color: #999;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+
+    .display {
+      background: #f7f8fa;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: right;
+      font-size: 36px;
+      font-weight: 300;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      word-wrap: break-word;
+      word-break: break-all;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #0e111e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #39103f;
+    }
+
+    .copy-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    /* Button grid */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      font-size: 20px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    /* Number buttons */
+    .btn-number {
+      background: #f7f8fa;
+      color: #2d3748;
+    }
+
+    .btn-number:hover {
+      background: #e2e8f0;
+    }
+
+    /* Operator buttons */
+    .btn-operator {
+      background: #121834;
+      color: white;
+    }
+
+    .btn-operator:hover {
+      background: #5568d3;
+    }
+
+    /* Special buttons */
+    .btn-clear {
+      background: #cb4b4b;
+      color: white;
+    }
+
+    .btn-clear:hover {
+      background: #f56565;
+    }
+
+    .btn-equals {
+      background: #48bb78;
+      color: white;
+      grid-column: span 2;
+    }
+
+    .btn-equals:hover {
+      background: #1b633c;
+    }
+
+    .btn-backspace {
+      background: #ed8936;
+      color: white;
+    }
+
+    .btn-backspace:hover {
+      background: #dd6b20;
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .calculator {
+        padding: 16px;
+      }
+
+      .display {
+        font-size: 28px;
+        padding: 16px;
+        min-height: 70px;
+      }
+
+      button {
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .buttons {
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1 class="head"> Developed by Noor Faisel</h1>
+    <div class="display-section">
+      <div class="last-expression" id="lastExpression"></div>
+      <div class="display">
+        <button class="copy-btn" id="copyBtn" title="Copy result">Copy</button>
+        <span id="display">0</span>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <button class="btn-clear" onclick="clearDisplay()">AC</button>
+      <button class="btn-backspace" onclick="backspace()">←</button>
+      <button class="btn-operator" onclick="appendOperator('/')">/</button>
+      <button class="btn-operator" onclick="appendOperator('*')">×</button>
+      
+      <button class="btn-number" onclick="appendNumber('7')">7</button>
+      <button class="btn-number" onclick="appendNumber('8')">8</button>
+      <button class="btn-number" onclick="appendNumber('9')">9</button>
+      <button class="btn-operator" onclick="appendOperator('-')">−</button>
+      
+      <button class="btn-number" onclick="appendNumber('4')">4</button>
+      <button class="btn-number" onclick="appendNumber('5')">5</button>
+      <button class="btn-number" onclick="appendNumber('6')">6</button>
+      <button class="btn-operator" onclick="appendOperator('+')">+</button>
+      
+      <button class="btn-number" onclick="appendNumber('1')">1</button>
+      <button class="btn-number" onclick="appendNumber('2')">2</button>
+      <button class="btn-number" onclick="appendNumber('3')">3</button>
+      <button class="btn-number" onclick="appendNumber('0')">0</button>
+      
+      <button class="btn-number" onclick="appendNumber('.')">.</button>
+      <button class="btn-equals" onclick="calculate()">=</button>
+      <button class="btn-number" onclick="appendNumber('0')">00</button>
+    </div>
+  </div>
+
+  <script>
+    // State variables
+    let currentInput = '0';
+    let lastExpression = '';
+    let shouldResetDisplay = false;
+
+    // Get DOM elements
+    const displayElement = document.getElementById('display');
+    const lastExpressionElement = document.getElementById('lastExpression');
+    const copyBtn = document.getElementById('copyBtn');
+
+    // Update the display
+    function updateDisplay() {
+      displayElement.textContent = currentInput;
+    }
+
+    // Clear display (AC button)
+    function clearDisplay() {
+      currentInput = '0';
+      lastExpression = '';
+      shouldResetDisplay = false;
+      updateDisplay();
+      lastExpressionElement.textContent = '';
+    }
+
+    // Backspace function
+    function backspace() {
+      if (shouldResetDisplay || currentInput === 'Error') {
+        clearDisplay();
+        return;
+      }
+      
+      if (currentInput.length > 1) {
+        currentInput = currentInput.slice(0, -1);
+      } else {
+        currentInput = '0';
+      }
+      updateDisplay();
+    }
+
+    // Append number or decimal point
+    function appendNumber(num) {
+      // Reset display if needed (after calculation or error)
+      if (shouldResetDisplay || currentInput === 'Error') {
+        currentInput = '0';
+        shouldResetDisplay = false;
+      }
+
+      // Handle decimal point
+      if (num === '.') {
+        // Get the last number in the expression
+        const lastNumber = currentInput.split(/[\+\-\*\/]/).pop();
+        // Don't allow multiple decimals in the same number
+        if (lastNumber.includes('.')) return;
+        // If starting fresh, add '0.'
+        if (currentInput === '0') {
+          currentInput = '0.';
+          updateDisplay();
+          return;
+        }
+      }
+
+      // Replace leading zero
+      if (currentInput === '0' && num !== '.') {
+        currentInput = num;
+      } else {
+        currentInput += num;
+      }
+      
+      updateDisplay();
+    }
+
+    // Append operator
+    function appendOperator(operator) {
+      if (currentInput === 'Error') {
+        clearDisplay();
+        return;
+      }
+
+      shouldResetDisplay = false;
+      
+      // Don't allow operator at the start (except minus for negative numbers)
+      if (currentInput === '0' && operator !== '-') return;
+      
+      // Replace last operator if the last character is an operator
+      const lastChar = currentInput.slice(-1);
+      if (['+', '-', '*', '/'].includes(lastChar)) {
+        currentInput = currentInput.slice(0, -1) + operator;
+      } else {
+        currentInput += operator;
+      }
+      
+      updateDisplay();
+    }
+
+    // Calculate result
+    function calculate() {
+      if (currentInput === 'Error') {
+        clearDisplay();
+        return;
+      }
+
+      try {
+        // Store the expression before evaluation
+        lastExpression = currentInput;
+        
+        // Replace × and − with * and - for evaluation
+        let expression = currentInput.replace(/×/g, '*').replace(/−/g, '-');
+        
+        // Check for division by zero
+        if (/\/\s*0(?!\d)/.test(expression)) {
+          currentInput = 'Error';
+          lastExpressionElement.textContent = lastExpression + ' =';
+          updateDisplay();
+          shouldResetDisplay = true;
+          return;
+        }
+        
+        // Evaluate the expression
+        // Using Function constructor for safer evaluation than eval
+        const result = Function('"use strict"; return (' + expression + ')')();
+        
+        // Handle invalid results
+        if (!isFinite(result)) {
+          currentInput = 'Error';
+        } else {
+          // Round to avoid floating point errors
+          currentInput = String(Math.round(result * 100000000) / 100000000);
+        }
+        
+        lastExpressionElement.textContent = lastExpression + ' =';
+        updateDisplay();
+        shouldResetDisplay = true;
+        
+      } catch (error) {
+        currentInput = 'Error';
+        lastExpressionElement.textContent = lastExpression + ' =';
+        updateDisplay();
+        shouldResetDisplay = true;
+      }
+    }
+
+    // Copy to clipboard
+    copyBtn.addEventListener('click', async () => {
+      if (currentInput === 'Error' || currentInput === '0') return;
+      
+      try {
+        await navigator.clipboard.writeText(currentInput);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+        }, 1500);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      
+      // Numbers
+      if (e.key >= '0' && e.key <= '9') {
+        appendNumber(e.key);
+      }
+      
+      // Operators
+      else if (e.key === '+') appendOperator('+');
+      else if (e.key === '-') appendOperator('-');
+      else if (e.key === '*') appendOperator('*');
+      else if (e.key === '/') appendOperator('/');
+      
+      // Decimal point
+      else if (e.key === '.' || e.key === ',') {
+        appendNumber('.');
+      }
+      
+      // Calculate
+      else if (e.key === 'Enter' || e.key === '=') {
+        calculate();
+      }
+      
+      // Backspace
+      else if (e.key === 'Backspace') {
+        backspace();
+      }
+      
+      // Clear
+      else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+        clearDisplay();
+      }
+    });
+
+    // Initialize display
+    updateDisplay();
+  </script>
+</body>
+</html>
